@@ -1,0 +1,98 @@
+version: '2.1'
+
+services:
+  shopdb-node:
+    build:
+      context: mariadb
+      dockerfile: Dockerfile
+    container_name: shopdb-node
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: shopdb
+      MYSQL_USER: shopuser
+      MYSQL_PASSWORD: shopuser
+      MYSQL_ROOT_PASSWORD: '1'
+    command: >
+      --sql-mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+      --general-log=ON
+      --log-queries-not-using-indexes=ON
+    networks:
+      - shop-network
+    ports:
+      - 3360:3306
+    healthcheck:
+      test: "/usr/bin/mysql --user=shopuser --password=shopuser --execute \"SHOW DATABASES;\""
+      timeout: 20s
+      retries: 20
+    volumes:
+      - shopdb-node-data:/var/lib/mysql
+
+  user_service:
+    build:
+      context: UserService
+      dockerfile: Dockerfile
+    container_name: user_service
+    restart: unless-stopped
+    environment:
+      - DB_HOST=shopdb-node
+      - DB_PORT=3306
+      - DB_LOGIN=shopuser
+      - DB_PASSWORD=shopuser
+      - DB_DATABASE=shopdb
+    ports:
+      - 8080:8080
+    networks:
+      - shop-network
+    depends_on:
+      shopdb-node:
+        condition: service_started
+
+  product_service:
+    build:
+      context: ProductService
+      dockerfile: Dockerfile
+    container_name: product_service
+    restart: unless-stopped
+    environment:
+      - SERVICE_HOST=user_service
+      - DB_HOST=shopdb-node
+      - DB_PORT=3306
+      - DB_LOGIN=shopuser
+      - DB_PASSWORD=shopuser
+      - DB_DATABASE=shopdb
+    ports:
+      - 8081:8081
+    networks:
+      - shop-network
+    depends_on:
+      user_service:
+        condition: service_started
+
+  basket_service:
+    build:
+      context: BasketService
+      dockerfile: Dockerfile
+    container_name: basket_service
+    restart: unless-stopped
+    environment:
+      - SERVICE_HOST=user_service
+      - DB_HOST=shopdb-node
+      - DB_PORT=3306
+      - DB_LOGIN=shopuser
+      - DB_PASSWORD=shopuser
+      - DB_DATABASE=shopdb
+    ports:
+      - 8082:8082
+    networks:
+      - shop-network
+    depends_on:
+      user_service:
+        condition: service_started
+
+volumes:
+  shopdb-node-data:
+
+networks:
+  shop-network:
+    driver: "bridge"
+    external: false

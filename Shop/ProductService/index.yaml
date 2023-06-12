@@ -1,0 +1,115 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'API ProductService'
+  description: API для работы с товарами
+servers:
+  - url: http://localhost:8081
+    description: product server
+paths:
+  /create_product:
+    post:
+      summary: Создание товара
+      parameters:
+      - name: product_name
+        description: Имя
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: product_category
+        description: Категория
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: product_content
+        description: Содержание
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The product was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/product'
+        404:
+          description: The product was not created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /get_goods:
+    get:
+      summary: Получение всех товаров
+      responses:
+        '200':
+          description: Goods were gotten
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getgoods'
+        404:
+          description: Error with goods
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    product:
+      type: object
+      required:
+        - id
+        - product_name
+        - product_category
+        - product_content
+        - creator_id
+        - create_date
+      properties:
+        id:
+          type: integer
+        product_name:
+          type: string
+        product_category:
+          type: string
+        product_content:
+          type: string
+        creator_id:
+          type: integer
+        create_date:
+          type: string
+    getgoods:
+      type: array
+      items:
+        $ref: '#/components/schemas/getgoods'
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: Сообщение о ошибке
+          type: string
+  securitySchemes:
+      basicAuth:     
+        type: http
+        scheme: basic
+security:
+  - basicAuth: []
