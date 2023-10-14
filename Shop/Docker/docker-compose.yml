@@ -3,7 +3,7 @@ version: '2.1'
 services:
   shopdb-node:
     build:
-      context: mariadb
+      context: mysql
       dockerfile: Dockerfile
     container_name: shopdb-node
     restart: unless-stopped
