@@ -6,8 +6,8 @@ RUN git clone -b master https://github.com/pocoproject/poco.git && cd poco && mk
 RUN git clone https://github.com/tdv/redis-cpp.git && cd redis-cpp && mkdir build && cd build && cmake .. && make && sudo make install && cd .. && cd .. 
 RUN git clone https://github.com/edenhill/librdkafka.git && cd librdkafka && ./configure && make && sudo make install && cd 
 RUN git clone https://github.com/mfontanini/cppkafka && cd cppkafka && mkdir build && cd build && cmake .. && make && sudo make install && cd 
-ARG build3=$RANDOM
-RUN git clone --branch lab5 https://github.com/Vsevolod245/Project_Management_2023.git
+ARG build1=$RANDOM
+RUN git clone https://github.com/RealLoLka/architecture-software.git
 RUN sudo ldconfig
-RUN cd Project_Management_2023/ServiceOrder/db_writer && mkdir build && cd build && cmake  .. && make
-ENTRYPOINT [ "Project_Management_2023/ServiceOrder/db_writer/build/db_writer" ]
+RUN cd architecture-software/Shop/db_qw && mkdir build && cd build && cmake  .. && make
+ENTRYPOINT [ "architecture-software/Shop/db_qw/build/db_qw" ]
