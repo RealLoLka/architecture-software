@@ -195,6 +195,7 @@ services:
 
 volumes:
   shopdb-node-data:
+  proxysql-data:
   cache:
   kafka_volume1:
 
