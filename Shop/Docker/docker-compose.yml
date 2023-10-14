@@ -51,7 +51,6 @@ proxysql:
       shopdb-node:
         condition: service_healthy
 
-
   cache:
     image: redis:6.2-alpine
     restart: always
