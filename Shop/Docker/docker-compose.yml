@@ -27,7 +27,31 @@ services:
     volumes:
       - shopdb-node-data:/var/lib/mysql
 
-  
+proxysql:
+    build:
+      context: proxysql
+      dockerfile: Dockerfile
+    container_name: proxysql
+    command: >
+      --initial
+    volumes:
+      - proxysql-data:/var/lib/proxysql
+    healthcheck:
+      test: "/usr/bin/mysql --user=shopuser --password=shopuser --execute \"SHOW DATABASES;\""
+      timeout: 20s
+      retries: 10
+    networks:
+      - shop-network
+    ports:
+      # Mysql Client Port
+      - "6033:6033"
+      # Mysql Admin Port
+      - "6032:6032"
+    depends_on:
+      shopdb-node:
+        condition: service_healthy
+
+
   cache:
     image: redis:6.2-alpine
     restart: always
@@ -109,7 +133,7 @@ services:
     container_name: db_qw
     restart: unless-stopped
     environment:
-      - DB_HOST=mariadb
+      - DB_HOST=proxysql
       - DB_PORT=6033
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
@@ -121,7 +145,7 @@ services:
     networks:
       - shop-network
     depends_on:   
-      mariadb:
+      proxysql:
         condition: service_started
       kafka1:
         condition: service_started
