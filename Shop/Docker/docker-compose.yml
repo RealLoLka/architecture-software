@@ -27,6 +27,18 @@ services:
     volumes:
       - shopdb-node-data:/var/lib/mysql
 
+  
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning 
+    networks:
+      - sos-network
+    volumes: 
+      - cache:/data
+
   user_service:
     build:
       context: UserService
@@ -39,11 +51,14 @@ services:
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
+      - CACHE=cache:6379
     ports:
       - 8080:8080
     networks:
       - shop-network
     depends_on:
+      cache:
+        condition: service_started
       shopdb-node:
         condition: service_started
 
@@ -60,6 +75,7 @@ services:
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
+      - CACHE=cache:6379
     ports:
       - 8081:8081
     networks:
@@ -81,6 +97,7 @@ services:
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
+      - CACHE=cache:6379
     ports:
       - 8082:8082
     networks:
@@ -91,6 +108,7 @@ services:
 
 volumes:
   shopdb-node-data:
+  cache:
 
 networks:
   shop-network:

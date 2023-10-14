@@ -148,7 +148,33 @@ public:
 
                 long id = atol(form.get("id").c_str());
 
-                std::optional<database::User> result = database::User::read_by_id(id);
+                bool is_use_cache = true;
+
+                if (form.has("no_cache")){
+                     is_use_cache = false;
+                }
+
+                std::optional<database::User> result;
+
+                if (is_use_cache)
+                {
+                    result =  database::User::read_from_cache_by_id(id);
+
+                    if(!result.has_value())
+                    {
+                        result = database::User::read_by_id(id);
+
+                        if(result)
+                        {
+                            result->save_to_cache();
+                        }
+                    }
+                }
+                else
+                {
+                    result = database::User::read_by_id(id);
+                }
+
                 if (result)
                 {
                     response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
