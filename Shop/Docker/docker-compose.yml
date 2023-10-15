@@ -148,7 +148,9 @@ services:
         condition: service_started
       proxysql:
         condition: service_started
-      shopdb-node:
+      shopdb-node1:
+        condition: service_started
+      shopdb-node2:
         condition: service_started
       kafka1:
         condition: service_started
