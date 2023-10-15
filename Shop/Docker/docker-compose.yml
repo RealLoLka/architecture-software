@@ -1,11 +1,11 @@
 version: '2.1'
 
 services:
-  shopdb-node:
+  shopdb-node1:
     build:
       context: mysql
       dockerfile: Dockerfile
-    container_name: shopdb-node
+    container_name: shopdb-node1
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: shopdb
@@ -25,7 +25,33 @@ services:
       timeout: 20s
       retries: 20
     volumes:
-      - shopdb-node-data:/var/lib/mysql
+      - shopdb-node1-data:/var/lib/mysql
+  
+  shopdb-node2:
+    build:
+      context: mysql
+      dockerfile: Dockerfile
+    container_name: shopdb-node2
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: shopdb
+      MYSQL_USER: shopuser
+      MYSQL_PASSWORD: shopuser
+      MYSQL_ROOT_PASSWORD: '1'
+    command: >
+      --sql-mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+      --general-log=ON
+      --log-queries-not-using-indexes=ON
+    networks:
+      - shop-network
+    ports:
+      - 3361:3306
+    healthcheck:
+      test: "/usr/bin/mysql --user=shopuser --password=shopuser --execute \"SHOW DATABASES;\""
+      timeout: 20s
+      retries: 20
+    volumes:
+      - shopdb-node2-data:/var/lib/mysql  
 
   proxysql:
       build:
@@ -48,7 +74,9 @@ services:
         # Mysql Admin Port
         - "6032:6032"
       depends_on:
-        shopdb-node:
+        shopdb-node1:
+          condition: service_healthy
+        shopdb-node2:
           condition: service_healthy
 
   cache:
@@ -196,7 +224,8 @@ services:
         condition: service_started
 
 volumes:
-  shopdb-node-data:
+  shopdb-node1-data:
+  shopdb-node2-data:
   proxysql-data:
   cache:
   kafka_volume1:
