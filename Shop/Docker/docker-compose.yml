@@ -131,7 +131,7 @@ services:
     restart: unless-stopped
     environment:
       - DB_HOST=proxysql
-      - DB_PORT=3306
+      - DB_PORT=6033
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
@@ -186,7 +186,7 @@ services:
     environment:
       - SERVICE_HOST=user_service
       - DB_HOST=proxysql
-      - DB_PORT=3306
+      - DB_PORT=6033
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
@@ -208,7 +208,7 @@ services:
     environment:
       - SERVICE_HOST=user_service
       - DB_HOST=proxysql
-      - DB_PORT=3306
+      - DB_PORT=6033
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
