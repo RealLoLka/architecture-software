@@ -27,7 +27,6 @@ services:
     volumes:
       - shopdb-node1-data:/var/lib/mysql
 
-services:
   shopdb-node2:
     build:
       context: mysql
@@ -53,7 +52,6 @@ services:
       retries: 20
     volumes:
       - shopdb-node2-data:/var/lib/mysql
-
 
   proxysql:
       build:
