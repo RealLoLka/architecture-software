@@ -134,14 +134,10 @@ services:
     networks:
       - shop-network
     depends_on:
-      cache:
-        condition: service_started
-      proxysql:
-        condition: service_started
-      kafka1:
-        condition: service_started
-      db_qw:
-        condition: service_started
+      - cache
+      - proxysql
+      - kafka1
+      - db_qw
 
   db_qw:
     build:
@@ -162,10 +158,8 @@ services:
     networks:
       - shop-network
     depends_on:   
-      proxysql:
-        condition: service_started
-      kafka1:
-        condition: service_started
+      - proxysql
+      - kafka1
 
   product_service:
     build:
@@ -186,8 +180,7 @@ services:
     networks:
       - shop-network
     depends_on:
-      user_service:
-        condition: service_started
+      - user_service
 
   basket_service:
     build:
@@ -208,8 +201,7 @@ services:
     networks:
       - shop-network
     depends_on:
-      user_service:
-        condition: service_started
+      - user_service
 
 volumes:
   shopdb-node1-data:
