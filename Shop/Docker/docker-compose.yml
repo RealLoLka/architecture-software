@@ -5,7 +5,7 @@ services:
     build:
       context: mariadb
       dockerfile: Dockerfile
-    container_name: shopdb-node
+    container_name: shopdb-node1
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: shopdb
@@ -31,7 +31,7 @@ services:
     build:
       context: mariadb
       dockerfile: Dockerfile
-    container_name: shopdb-node
+    container_name: shopdb-node2
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: shopdb
