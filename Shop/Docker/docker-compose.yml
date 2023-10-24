@@ -3,9 +3,9 @@ version: '3.3'
 services:
   shopdb-node1:
     build:
-      context: mysql
+      context: mariadb
       dockerfile: Dockerfile
-    container_name: shopdb-node1
+    container_name: shopdb-node
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: shopdb
@@ -20,14 +20,18 @@ services:
       - shop-network
     ports:
       - 3360:3306
+    healthcheck:
+      test: "/usr/bin/mariadb --user=shopuser --password=shopuser --execute \"SHOW DATABASES;\""
+      timeout: 20s
+      retries: 20
     volumes:
-      - shopdb-node1-data:/var/lib/mysql
+      - shopdb-node-data1:/var/lib/mariadb
 
   shopdb-node2:
     build:
-      context: mysql
+      context: mariadb
       dockerfile: Dockerfile
-    container_name: shopdb-node2
+    container_name: shopdb-node
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: shopdb
@@ -42,8 +46,13 @@ services:
       - shop-network
     ports:
       - 3361:3306
+    healthcheck:
+      test: "/usr/bin/mariadb --user=shopuser --password=shopuser --execute \"SHOW DATABASES;\""
+      timeout: 20s
+      retries: 20
     volumes:
-      - shopdb-node2-data:/var/lib/mysql
+      - shopdb-node-data2:/var/lib/mariadb
+
 
   proxysql:
       build:
@@ -55,7 +64,7 @@ services:
       volumes:
         - proxysql-data:/var/lib/proxysql
       healthcheck:
-        test: "/usr/bin/mysql --user=shopuser --password=shopuser --execute \"SHOW DATABASES;\""
+        test: "/usr/bin/mariadb --user=shopuser --password=shopuser --execute \"SHOW DATABASES;\""
         timeout: 20s
         retries: 10
       networks:
@@ -80,39 +89,6 @@ services:
     volumes: 
       - cache:/data
 
-  kafka1:
-    image: 'bitnami/kafka:latest'
-    container_name: kafka1
-    restart: unless-stopped
-    environment:
-        KAFKA_ENABLE_KRAFT: "yes"
-        KAFKA_CFG_PROCESS_ROLES: "broker,controller"
-        KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-        KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
-        KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
-        KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka1:9092"
-        KAFKA_BROKER_ID: 1
-        KAFKA_CFG_NODE_ID: 1
-        KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka1:9093"
-        ALLOW_PLAINTEXT_LISTENER: "yes"
-        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-        KAFKA_KRAFT_CLUSTER_ID: "dh6khitPSDGZSBOjNeTC_g"
-    volumes:
-        - kafka_volume1:/bitnami/kafka
-    networks:
-        - shop-network
-
-  kafka-ui:
-    image: provectuslabs/kafka-ui:v0.4.0
-    ports:
-      - "8888:8181"
-    environment:
-      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: "kafka1:9092"
-      KAFKA_CLUSTERS_0_NAME: "kraft"
-    networks:
-      - shop-network
-
-
   user_service:
     build:
       context: UserService
@@ -120,46 +96,23 @@ services:
     container_name: user_service
     restart: unless-stopped
     environment:
-      - DB_HOST=proxysql
-      - DB_PORT=6033
+      - DB_HOST=shopdb-node
+      - DB_PORT=3306
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
       - CACHE=cache:6379
-      - QUEUE_HOST=kafka1:9092
-      - QUEUE_TOPIC=event_server
-      - QUEUE_GROUP_ID=0
     ports:
       - 8080:8080
     networks:
       - shop-network
     depends_on:
-      - cache
-      - proxysql
-      - kafka1
-      - db_qw
-
-  db_qw:
-    build:
-      context: db_qw
-      dockerfile: Dockerfile
-    container_name: db_qw
-    restart: unless-stopped
-    environment:
-      - DB_HOST=proxysql
-      - DB_PORT=6033
-      - DB_LOGIN=shopuser
-      - DB_PASSWORD=shopuser
-      - DB_DATABASE=shopdb
-      - CACHE=cache:6379
-      - QUEUE_HOST=kafka1:9092
-      - QUEUE_TOPIC=event_server
-      - QUEUE_GROUP_ID=0
-    networks:
-      - shop-network
-    depends_on:   
-      - proxysql
-      - kafka1
+      cache:
+        condition: service_started
+      shopdb-node1:
+        condition: service_started
+      shopdb-node2:
+        condition: service_started
 
   product_service:
     build:
@@ -169,8 +122,8 @@ services:
     restart: unless-stopped
     environment:
       - SERVICE_HOST=user_service
-      - DB_HOST=proxysql
-      - DB_PORT=6033
+      - DB_HOST=shopdb-node
+      - DB_PORT=3306
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
@@ -180,7 +133,8 @@ services:
     networks:
       - shop-network
     depends_on:
-      - user_service
+      user_service:
+        condition: service_started
 
   basket_service:
     build:
@@ -190,8 +144,8 @@ services:
     restart: unless-stopped
     environment:
       - SERVICE_HOST=user_service
-      - DB_HOST=proxysql
-      - DB_PORT=6033
+      - DB_HOST=shopdb-node
+      - DB_PORT=3306
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
@@ -201,14 +155,15 @@ services:
     networks:
       - shop-network
     depends_on:
-      - user_service
+      user_service:
+        condition: service_started
 
 volumes:
   shopdb-node1-data:
   shopdb-node2-data:
-  proxysql-data:
+  proxysql:
   cache:
-  kafka_volume1:
+
 
 networks:
   shop-network:

@@ -47,8 +47,6 @@ namespace database
             void save_to_cache();
             static std::optional<User> read_from_cache_by_id(long id);
 
-            void send_to_queue();
-
     };
 }
 

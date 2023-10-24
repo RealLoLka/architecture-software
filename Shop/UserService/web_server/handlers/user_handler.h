@@ -298,7 +298,7 @@ public:
 
                     if (check_result)
                     {
-                        user.send_to_queue();
+                        user.save_to_mysql();
                         response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                         response.setChunkedTransferEncoding(true);
                         response.setContentType("application/json");
