@@ -25,7 +25,7 @@ services:
       timeout: 20s
       retries: 20
     volumes:
-      - shopdb-node-data1:/var/lib/mariadb
+      - shopdb-node1-data:/var/lib/mariadb
 
   shopdb-node2:
     build:
@@ -51,7 +51,7 @@ services:
       timeout: 20s
       retries: 20
     volumes:
-      - shopdb-node-data2:/var/lib/mariadb
+      - shopdb-node2-data:/var/lib/mariadb
 
 
   proxysql:
