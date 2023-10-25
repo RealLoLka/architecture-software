@@ -9,5 +9,5 @@ RUN git clone https://github.com/mfontanini/cppkafka && cd cppkafka && mkdir bui
 ARG build1=$RANDOM
 RUN git clone https://github.com/RealLoLka/architecture-software.git
 RUN sudo ldconfig
-RUN cd architecture-software/Shop/UserService && mkdir build && cd build && cmake  .. && make
-ENTRYPOINT [ "architecture-software/Shop/UserService/build/UserService" ]
+RUN cd architecture-software/Shop/db_qw && mkdir build && cd build && cmake  .. && make
+ENTRYPOINT [ "architecture-software/Shop/db_qw/build/db_qw" ]
