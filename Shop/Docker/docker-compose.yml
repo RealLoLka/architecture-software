@@ -50,8 +50,6 @@ services:
         context: proxysql
         dockerfile: Dockerfile
       container_name: proxysql
-      command: >
-        --initial
       volumes:
         - proxysql-data:/var/lib/proxysql
       healthcheck:
