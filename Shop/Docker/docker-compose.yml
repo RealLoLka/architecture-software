@@ -25,7 +25,7 @@ services:
       timeout: 20s
       retries: 20
     volumes:
-      - shopdb-node-data1:/var/lib/mariadb
+      - shopdb-node1-data:/var/lib/mariadb
 
   shopdb-node2:
     build:
@@ -51,7 +51,7 @@ services:
       timeout: 20s
       retries: 20
     volumes:
-      - shopdb-node-data2:/var/lib/mariadb
+      - shopdb-node2-data:/var/lib/mariadb
 
 
   proxysql:
@@ -59,8 +59,6 @@ services:
         context: proxysql
         dockerfile: Dockerfile
       container_name: proxysql
-      command: >
-        --initial
       volumes:
         - proxysql-data:/var/lib/proxysql
       healthcheck:
@@ -107,12 +105,10 @@ services:
     networks:
       - shop-network
     depends_on:
-      cache:
-        condition: service_started
-      shopdb-node1:
-        condition: service_started
-      shopdb-node2:
-        condition: service_started
+      - proxysql
+      - cache
+      - shopdb-node1
+      - shopdb-node2
 
   product_service:
     build:
@@ -133,8 +129,7 @@ services:
     networks:
       - shop-network
     depends_on:
-      user_service:
-        condition: service_started
+      - user_service
 
   basket_service:
     build:
@@ -155,8 +150,7 @@ services:
     networks:
       - shop-network
     depends_on:
-      user_service:
-        condition: service_started
+      - user_service
 
 volumes:
   shopdb-node1-data:
