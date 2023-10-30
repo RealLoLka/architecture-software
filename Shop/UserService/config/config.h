@@ -12,9 +12,6 @@ class  Config{
         std::string _password;
         std::string _database;
         std::string _cache_servers;
-        std::string _queue_host;
-        std::string _queue_topic;
-        std::string _queue_group_id;
 
     public:
         static Config& get();
@@ -32,12 +29,6 @@ class  Config{
         const std::string& get_password() const ;
         const std::string& get_database() const ;
         const std::string& get_cache_servers() const;
-        std::string& queue_group_id();
-        std::string& queue_host();
-        std::string& queue_topic();
-        const std::string& get_queue_group_id() const;
-        const std::string& get_queue_host() const ;
-        const std::string& get_queue_topic() const ;
 };
 
 #endif

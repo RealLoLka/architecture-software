@@ -12,7 +12,7 @@ find_package(OpenSSL)
 find_package(Threads)
 find_package(ZLIB)
 find_package(Poco REQUIRED COMPONENTS Foundation Util Net XML JSON Crypto NetSSL)
-find_package(CppKafka REQUIRED)
+
 
 if(NOT ${Poco_FOUND})
     message(FATAL_ERROR "Poco C++ Libraries not found.")
@@ -44,6 +44,4 @@ target_link_libraries(${EXAMPLE_BINARY} PRIVATE
                              "PocoData"
                              "PocoDataMySQL"
                              "mysqlclient"
-                             ZLIB::ZLIB
-                             "rdkafka++"
-                             CppKafka::cppkafka)
+                             ZLIB::ZLIB)
