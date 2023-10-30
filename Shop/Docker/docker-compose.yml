@@ -155,7 +155,7 @@ services:
 volumes:
   shopdb-node1-data:
   shopdb-node2-data:
-  proxysql:
+  proxysql-data:
   cache:
 
 
