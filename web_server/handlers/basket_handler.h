@@ -96,7 +96,7 @@ public:
 
             else if (request.getMethod() == Poco::Net::HTTPRequest::HTTP_POST)
             {
-                if (form.has("user_id") && form.has("service_id"))
+                if (form.has("user_id") && form.has("product_id"))
                 {
                     long user_id = atol(form.get("user_id").c_str());
                     long product_id = atol(form.get("product_id").c_str());
