@@ -1,0 +1,392 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Users API'
+  description: API для пользователей по курсу Архитектура программных систем
+servers:
+  - url: http://localhost:8080
+    description: Example server
+paths:
+  /search:
+    get:
+      summary: Поиск пользователей по маске имени и фамилии
+      parameters:
+      - name: first_name
+        description: Имя
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: last_name
+        description: Фамилия
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The users for the provided masks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+        404:
+          description: No user found for the provided mask
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth:
+    get:
+      summary: Проверка аутентификации
+      responses:
+        '200':
+          description: User ID
+          content:
+            application/json:
+              schema:
+               type: string
+        401:
+          description: Not authentication
+          content:
+            application/json:
+              schema:
+                type: string
+  /user:
+    get:
+      summary: Чтение информации о пользователе
+      parameters:
+      - name: id
+        description: Уникальный идентификатор пользователя
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/user_id'
+      responses:
+        '200':
+          description: Найденный пользователь
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        404:
+          description: Пользователь не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Неожиданная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Добавление нового пользователя
+      parameters:
+      - name: first_name
+        description: Имя пользователя
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: last_name
+        description: Фамилия пользователя
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: email
+        description: email пользователя
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: login
+        description: login пользователя
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: password
+        description: пароль пользователя
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Идентификатор, добавленного пользователя
+          content:
+            application/json:
+              schema:
+                type: integer
+        404:
+          description: Ошибка добавления пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Неожиданная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /showlist:
+    get:
+      summary: Вывести список всех услуг
+      responses:
+        '200':
+          description: The users for the provided masks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/services'
+        404:
+          description: No user found for the provided mask
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /service:
+    post:
+      summary: Добавление новой услуги
+      parameters:
+      - name: name
+        description: Название услуги
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: category
+        description: Категория услуги
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: method
+        description: Способ получения услуги (дист\наяву)
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: description
+        description: Описание услуги
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: schedule
+        description: Расписание услуги
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: price
+        description: Цена услуги
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: user_id
+        description: идентификатор пользователя
+        in: query
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Идентификатор, добавленной услуги
+          content:
+            application/json:
+              schema:
+                type: integer
+        404:
+          description: Ошибка добавления услуги
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Неожиданная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /getorders:
+    get:
+      summary: Поиск Заказов по маске ID пользователя
+      parameters:
+      - name: user_id
+        description: идентификатор пользователя
+        in: query
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: The orders for the provided masks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/order'
+        404:
+          description: No user found for the provided mask
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /order:
+    post:
+      summary: Добавление услуги в заказ
+      parameters:
+      - name: user_id
+        description: идентификатор пользователя
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: service_id
+        description: идентификатор услуги
+        in: query
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Идентификатор, добавленного заказа
+          content:
+            application/json:
+              schema:
+                type: integer
+        404:
+          description: Ошибка добавления заказа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Неожиданная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    user_id:
+      description: Уникальный идентификатор пользователя
+      type: integer
+    users:
+      type: array
+      items:
+        $ref: '#/components/schemas/user'
+    user:
+      type: object
+      required:
+        - id
+        - first_name
+        - last_name
+        - email
+        - login
+        - password
+      properties:
+        id:
+          $ref: '#/components/schemas/user_id'
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+    service_id:
+      description: Уникальный идентификатор услуги
+      type: integer
+    services:
+      type: array
+      items:
+        $ref: '#/components/schemas/service'
+    service:
+      type: object
+      required:
+        - id
+        - name
+        - category 
+        - method
+        - desctiption
+        - schedule
+        - price
+        - user_id
+      properties:
+        id:
+          $ref: '#/components/schemas/service_id'
+        name:
+          type: string
+        category:
+          type: string
+        method:
+          type: string
+        description:
+          type: string
+        schedule:
+          type: string
+        price:
+          type: string
+        user_id:
+          type: integer
+    order_id:
+      description: Уникальный идентификатор заказа
+      type: integer
+    orders:
+      type: array
+      items:
+        $ref: '#/components/schemas/order'
+    order:
+      type: object
+      required:
+        - id
+        - user_id
+        - service_id
+      properties:
+        id:
+          $ref: '#/components/schemas/order_id'
+        user_id:
+          type: integer
+        service_id:
+          type: integer
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: Сообщение о ошибке
+          type: string
+  securitySchemes:
+      basicAuth:     
+        type: http
+        scheme: basic
+security:
+  - basicAuth: []
