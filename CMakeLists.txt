@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(hl_mai_lab_00 C CXX)
+project(architecture-software C CXX)
 
-SET (EXAMPLE_BINARY "hl_mai_lab_00")
+SET (EXAMPLE_BINARY "architecture-software")
 set (STD_CXX "c++17")
 set (REDISCPP_FLAGS "-DREDISCPP_HEADER_ONLY=ON")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -std=${STD_CXX} ${REDISCPP_FLAGS}")
