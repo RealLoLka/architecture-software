@@ -94,8 +94,8 @@ services:
     container_name: user_service
     restart: unless-stopped
     environment:
-      - DB_HOST=shopdb-node
-      - DB_PORT=3306
+      - DB_HOST=proxysql
+      - DB_PORT=6033
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
@@ -118,8 +118,8 @@ services:
     restart: unless-stopped
     environment:
       - SERVICE_HOST=user_service
-      - DB_HOST=shopdb-node
-      - DB_PORT=3306
+      - DB_HOST=proxysql
+      - DB_PORT=6033
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
@@ -139,8 +139,8 @@ services:
     restart: unless-stopped
     environment:
       - SERVICE_HOST=user_service
-      - DB_HOST=shopdb-node
-      - DB_PORT=3306
+      - DB_HOST=proxysql
+      - DB_PORT=6033
       - DB_LOGIN=shopuser
       - DB_PASSWORD=shopuser
       - DB_DATABASE=shopdb
