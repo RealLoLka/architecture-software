@@ -76,7 +76,7 @@ namespace database
             Statement select(session);
             std::vector<Product> result;
             Product a;
-            select << "SELECT id, name, category, method, description, schedule, price, user_id FROM Service",
+            select << "SELECT id, name, category, method, description, schedule, price, user_id FROM Product",
                 into(a._id),
                 into(a._name),
                 into(a._category),
