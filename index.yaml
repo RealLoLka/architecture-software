@@ -2,7 +2,7 @@ openapi: '3.0.0'
 info:
   version: '1.0.0'
   title: 'Users API'
-  description: API для пользователей по курсу Архитектура программных систем
+  description: API
 servers:
   - url: http://localhost:8080
     description: Example server
@@ -141,14 +141,14 @@ paths:
                 $ref: '#/components/schemas/Error'
   /showlist:
     get:
-      summary: Вывести список всех услуг
+      summary: Вывести список всех продуктов
       responses:
         '200':
           description: The users for the provided masks
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/services'
+                $ref: '#/components/schemas/products'
         404:
           description: No user found for the provided mask
           content:
@@ -161,42 +161,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /service:
+  /product:
     post:
-      summary: Добавление новой услуги
+      summary: Добавление нового продукта
       parameters:
       - name: name
-        description: Название услуги
+        description: Название продукта
         in: query
         required: true
         schema:
           type: string
       - name: category
-        description: Категория услуги
+        description: Категория продукта
         in: query
         required: true
         schema:
           type: string
       - name: method
-        description: Способ получения услуги (дист\наяву)
+        description: Способ получения продукта
         in: query
         required: true
         schema:
           type: string
       - name: description
-        description: Описание услуги
+        description: Описание продукта
         in: query
         required: true
         schema:
           type: string
       - name: schedule
-        description: Расписание услуги
+        description: Наличие продукта
         in: query
         required: true
         schema:
           type: string
       - name: price
-        description: Цена услуги
+        description: Цена продукта
         in: query
         required: true
         schema:
@@ -209,13 +209,13 @@ paths:
           type: integer
       responses:
         '200':
-          description: Идентификатор, добавленной услуги
+          description: Идентификатор, добавленного продукта
           content:
             application/json:
               schema:
                 type: integer
         404:
-          description: Ошибка добавления услуги
+          description: Ошибка добавления продукта
           content:
             application/json:
               schema:
@@ -226,9 +226,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /getorders:
+  /getbasket:
     get:
-      summary: Поиск Заказов по маске ID пользователя
+      summary: Поиск корзины по маске ID пользователя
       parameters:
       - name: user_id
         description: идентификатор пользователя
@@ -238,11 +238,11 @@ paths:
           type: integer
       responses:
         '200':
-          description: The orders for the provided masks
+          description: The product for the provided masks
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/order'
+                $ref: '#/components/schemas/basket'
         404:
           description: No user found for the provided mask
           content:
@@ -255,9 +255,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /order:
+  /basket:
     post:
-      summary: Добавление услуги в заказ
+      summary: Добавление продукта в корзину
       parameters:
       - name: user_id
         description: идентификатор пользователя
@@ -265,21 +265,21 @@ paths:
         required: true
         schema:
           type: integer
-      - name: service_id
-        description: идентификатор услуги
+      - name: product_id
+        description: идентификатор продукта
         in: query
         required: true
         schema:
           type: integer
       responses:
         '200':
-          description: Идентификатор, добавленного заказа
+          description: Идентификатор, добавленного продукта
           content:
             application/json:
               schema:
                 type: integer
         404:
-          description: Ошибка добавления заказа
+          description: Ошибка добавления продукта
           content:
             application/json:
               schema:
@@ -321,14 +321,14 @@ components:
           type: string
         password:
           type: string
-    service_id:
-      description: Уникальный идентификатор услуги
+    product_id:
+      description: Уникальный идентификатор продукта
       type: integer
-    services:
+    products:
       type: array
       items:
-        $ref: '#/components/schemas/service'
-    service:
+        $ref: '#/components/schemas/product'
+    product:
       type: object
       required:
         - id
@@ -341,7 +341,7 @@ components:
         - user_id
       properties:
         id:
-          $ref: '#/components/schemas/service_id'
+          $ref: '#/components/schemas/product_id'
         name:
           type: string
         category:
@@ -356,25 +356,25 @@ components:
           type: string
         user_id:
           type: integer
-    order_id:
+    basket_id:
       description: Уникальный идентификатор заказа
       type: integer
-    orders:
+    baskets:
       type: array
       items:
-        $ref: '#/components/schemas/order'
-    order:
+        $ref: '#/components/schemas/basket'
+    basket:
       type: object
       required:
         - id
         - user_id
-        - service_id
+        - product_id
       properties:
         id:
-          $ref: '#/components/schemas/order_id'
+          $ref: '#/components/schemas/basket_id'
         user_id:
           type: integer
-        service_id:
+        product_id:
           type: integer
     Error:
       type: object

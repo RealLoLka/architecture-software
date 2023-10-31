@@ -28,10 +28,10 @@ namespace database
             Statement create_stmt(session);
             create_stmt << "CREATE TABLE IF NOT EXISTS `Basket` (`id` INT NOT NULL AUTO_INCREMENT,"
                         << "`user_id` INT NOT NULL,"
-                        << "`service_id` INT NOT NULL,"
+                        << "`product_id` INT NOT NULL,"
                         << "PRIMARY KEY (`id`),"
                         << "KEY `ORD_T_User_id` (`user_id`),"
-                        << "KEY `ORD_FK_Service_id` (`service_id`));",
+                        << "KEY `ORD_FK_product_id` (`product_id`));",
                 now;
         }
 
@@ -54,7 +54,7 @@ namespace database
 
         root->set("id", _id);
         root->set("user_id", _user_id);
-        root->set("service_id", _service_id);
+        root->set("product_id", _product_id);
 
         return root;
     }
@@ -69,10 +69,10 @@ namespace database
             Poco::Data::Statement select(session);
             std::vector<Basket> result;
             Basket a;
-            select << "SELECT id, user_id, service_id FROM `Basket` where user_id=?",
+            select << "SELECT id, user_id, sproduct_id FROM `Basket` where user_id=?",
                 into(a._id),
                 into(a._user_id),
-                into(a._service_id),
+                into(a._product_id),
                 use(user_id),
                 range(0, 1); //  iterate over result set one row at a time
 
@@ -105,9 +105,9 @@ namespace database
             Poco::Data::Session session = database::Database::get().create_session();
             Poco::Data::Statement insert(session);
 
-            insert << "INSERT INTO `Basket` (user_id,service_id) VALUES(?, ?)",
+            insert << "INSERT INTO `Basket` (user_id,product_id) VALUES(?, ?)",
                 use(_user_id),
-                use(_service_id);
+                use(_product_id);
 
             insert.execute();
 
@@ -146,9 +146,9 @@ namespace database
         return _user_id;
     }
 
-    long Basket::get_service_id() const
+    long Basket::get_product_id() const
     {
-        return _service_id;
+        return _product_id;
     }
 
     long &Basket::id()
@@ -161,9 +161,9 @@ namespace database
         return _user_id;
     }
 
-    long &Basket::service_id()
+    long &Basket::product_id()
     {
-        return _service_id;
+        return _product_id;
     }
     
 }
