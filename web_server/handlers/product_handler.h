@@ -97,7 +97,7 @@ public:
                     product.category() = form.get("category");
                     product.method() = form.get("method");
                     product.description() = form.get("description");
-                    product.presence() = from.get("presence");
+                    product.presence() = form.get("presence");
                     product.price() = form.get("price");
                     product.user_id() = atol(form.get("user_id").c_str());
 
