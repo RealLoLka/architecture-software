@@ -31,9 +31,11 @@ namespace database
                         << "`category` VARCHAR(256) NOT NULL,"
                         << "`method` VARCHAR(256) NULL,"
                         << "`description` VARCHAR(256) NULL,"
+                        << "`presence` VARCHAR(256) NULL,"
                         << "`price` VARCHAR(256) NULL,"
                         << "`user_id` INT NOT NULL,"
-                        << "PRIMARY KEY (`id`),KEY `categ` (`category`),",
+                        << "PRIMARY KEY (`id`),KEY `categ` (`category`),"
+                        << "KEY `T_User_id` (`user_id`));",
                 now;
         }
 
@@ -59,6 +61,7 @@ namespace database
         root->set("category", _category);
         root->set("method", _method);
         root->set("description", _description);
+        root->set("presence", _presence);
         root->set("price", _price);
         root->set("user_id", _user_id);
 
@@ -73,12 +76,13 @@ namespace database
             Statement select(session);
             std::vector<Product> result;
             Product a;
-            select << "SELECT id, name, category, method, description, price, user_id FROM Product",
+            select << "SELECT id, name, category, method, description, presence, price, user_id FROM Product",
                 into(a._id),
                 into(a._name),
                 into(a._category),
                 into(a._method),
                 into(a._description),
+                into(a._presence),
                 into(a._price),
                 into(a._user_id),
                 range(0, 1); //  iterate over result set one row at a time
@@ -115,11 +119,12 @@ namespace database
             Product serv_user;
 
 
-            insert << "INSERT INTO `Product` (name,category,method,description,price,user_id) VALUES(?, ?, ?, ?, ?, ?, ?)",
+            insert << "INSERT INTO `Product` (name,category,method,description,presence,price,user_id) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 use(_name),
                 use(_category),
                 use(_method),
                 use(_description),
+                use(_presence),
                 use(_price),
                 use(_user_id);
 
@@ -175,6 +180,11 @@ namespace database
         return _description;
     }
 
+    const std::string &Product::get_presence() const
+    {
+        return _presence;
+    }
+
     const std::string &Product::get_price() const
     {
         return _price;
@@ -208,6 +218,11 @@ namespace database
     std::string &Product::description()
     {
         return _description;
+    }
+
+    std::string &Product::presence()
+    {
+        return _presence;
     }
 
     std::string &Product::price()
