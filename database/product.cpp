@@ -60,8 +60,8 @@ namespace database
         root->set("name", _name);
         root->set("category", _category);
         root->set("method", _method);
-        root->set("schedule", _schedule);
         root->set("description", _description);
+        root->set("schedule", _schedule);
         root->set("price", _price);
         root->set("user_id", _user_id);
 
@@ -119,7 +119,7 @@ namespace database
             Product serv_user;
 
 
-            insert << "INSERT INTO `Product` (name,category,method,description,price,user_id) VALUES(?, ?, ?, ?, ?, ?, ?)",
+            insert << "INSERT INTO `Product` (name,category,method,description,schedule,price,user_id) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 use(_name),
                 use(_category),
                 use(_method),
@@ -224,7 +224,6 @@ namespace database
     {
         return _schedule;
     }
-
 
     std::string &Product::price()
     {
