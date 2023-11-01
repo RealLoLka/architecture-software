@@ -37,7 +37,7 @@ namespace database
             std::string &category();
             std::string &method();
             std::string &description();
-            std::string &presence()
+            std::string &presence();
             std::string &price();
             long&        user_id();
 
