@@ -33,8 +33,7 @@ namespace database
                         << "`description` VARCHAR(256) NULL,"
                         << "`price` VARCHAR(256) NULL,"
                         << "`user_id` INT NOT NULL,"
-                        << "PRIMARY KEY (`id`),KEY `categ` (`category`),"
-                        << "KEY `T_User_id` (`user_id`));",
+                        << "PRIMARY KEY (`id`),KEY `categ` (`category`),",
                 now;
         }
 
