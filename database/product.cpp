@@ -31,6 +31,7 @@ namespace database
                         << "`category` VARCHAR(256) NOT NULL,"
                         << "`method` VARCHAR(256) NULL,"
                         << "`description` VARCHAR(256) NULL,"
+                        << "`schedule` VARCHAR(256) NULL,"
                         << "`price` VARCHAR(256) NULL,"
                         << "`user_id` INT NOT NULL,"
                         << "PRIMARY KEY (`id`),KEY `categ` (`category`),"
@@ -59,6 +60,7 @@ namespace database
         root->set("name", _name);
         root->set("category", _category);
         root->set("method", _method);
+        root->set("schedule", _schedule);
         root->set("description", _description);
         root->set("price", _price);
         root->set("user_id", _user_id);
@@ -74,12 +76,13 @@ namespace database
             Statement select(session);
             std::vector<Product> result;
             Product a;
-            select << "SELECT id, name, category, method, description, price, user_id FROM Product",
+            select << "SELECT id, name, category, method, description, schedule, price, user_id FROM Product",
                 into(a._id),
                 into(a._name),
                 into(a._category),
                 into(a._method),
                 into(a._description),
+                into(a._schedule),
                 into(a._price),
                 into(a._user_id),
                 range(0, 1); //  iterate over result set one row at a time
@@ -121,6 +124,7 @@ namespace database
                 use(_category),
                 use(_method),
                 use(_description),
+                use(_schedule),
                 use(_price),
                 use(_user_id);
 
@@ -176,6 +180,11 @@ namespace database
         return _description;
     }
 
+    const std::string &Product::get_schedule() const
+    {
+        return _schedule;
+    }    
+
     const std::string &Product::get_price() const
     {
         return _price;
@@ -210,6 +219,12 @@ namespace database
     {
         return _description;
     }
+
+    std::string &Product::schedule()
+    {
+        return _schedule;
+    }
+
 
     std::string &Product::price()
     {
