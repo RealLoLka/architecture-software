@@ -69,7 +69,7 @@ namespace database
             Poco::Data::Statement select(session);
             std::vector<Basket> result;
             Basket a;
-            select << "SELECT id, user_id, sproduct_id FROM `Basket` where user_id=?",
+            select << "SELECT id, user_id, product_id FROM `Basket` where user_id=?",
                 into(a._id),
                 into(a._user_id),
                 into(a._product_id),
