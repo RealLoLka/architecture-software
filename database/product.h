@@ -15,7 +15,6 @@ namespace database
             std::string _category;
             std::string _method;
             std::string _description;
-            std::string _schedule;
             std::string _price;
             long _user_id;
 
@@ -29,7 +28,6 @@ namespace database
             const std::string &get_category() const;
             const std::string &get_method() const;
             const std::string &get_description() const;
-            const std::string &get_schedule() const;
             const std::string &get_price() const;
 
             long&        id();
@@ -37,7 +35,6 @@ namespace database
             std::string &category();
             std::string &method();
             std::string &description();
-            std::string &schedule();
             std::string &price();
             long&        user_id();
 
