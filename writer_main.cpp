@@ -65,8 +65,8 @@ int main()
                     // Print the payload
                     std::string payload = msg.get_payload();
                     std::cout << msg.get_payload() << std::endl;
-                    database::Author a = database::Author::fromJSON(payload);
-                    a.save_to_mysql();
+                    database::User u = database::User::fromJSON(payload);
+                    u.save_to_mysql();
 
                     // Now commit the message
                     consumer.commit(msg);
