@@ -116,12 +116,13 @@ services:
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
       KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka1:9092"
       KAFKA_BROKER_ID: 1
+      KAFKA_CFG_NODE_ID: 1
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka1:9093"
       ALLOW_PLAINTEXT_LISTENER: "yes"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_KRAFT_CLUSTER_ID: "dh6khitPSDGZSBOjNeTC_g"
     volumes:
-      - kafka_volume:/bitnami/kafka
+      - kafka_volume1:/bitnami/kafka
     networks:
       - arch-network
 
@@ -147,6 +148,9 @@ services:
       - DB_PASSWORD=stud
       - DB_DATABASE=archdb
       - CACHE=cache:6379
+      - QUEUE_HOST=kafka1:9092
+      - QUEUE_TOPIC=event_server
+      - QUEUE_GROUP_ID=0
     ports:
       - 8080:8080
     networks:
@@ -171,7 +175,7 @@ services:
       - DB_PASSWORD=stud
       - DB_DATABASE=archdb
       - CACHE=cache:6379
-      - QUEUE_HOST=kafka-node-1:9092
+      - QUEUE_HOST=kafka1:9092
       - QUEUE_TOPIC=event_server
       - QUEUE_GROUP_ID=0
     networks:
@@ -189,7 +193,7 @@ volumes:
   db-node-2-data:
   db-node-3-data:
   proxysql-data:
-  kafka_volume:
+  kafka_volume1:
   cache:
 
 networks:
