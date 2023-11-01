@@ -337,48 +337,9 @@ namespace database
                       std::end(v),
                       std::back_inserter(result));
         }
-
-
-        // sort
-        // std::vector<long> result_distincted;
-        // std::sort(std::begin(result), std::end(result));
-        // long old = -1;
-
-        // deduplicate
-        // std::copy_if(std::begin(result), std::end(result), std::back_inserter(result_distincted),
-        //              [&old](long x)
-        //              {
-        //                  if (x != old)
-        //                  {
-        //                      old = x;
-        //                      return true;
-        //                  }
-        //                  else
-        //                      return false;
-        //              });
-
         return result;
     }
-        
-    //     select << "SELECT id, first_name, last_name, email, login, password FROM User where first_name LIKE ? and last_name LIKE ?",
-    //         into(a._id),
-    //         into(a._first_name),
-    //         into(a._last_name),
-    //         into(a._email),
-    //         into(a._login),
-    //         into(a._password),
-    //         use(first_name),
-    //         use(last_name),
-    //         range(0, 1); //  iterate over result set one row at a time
-
-    //     while (!select.done())
-    //     {
-    //         if (select.execute())
-    //             result.push_back(a);
-    //     }
-    //     return result;
-
-    // }
+ 
     long User::db_length()
     {
         long result = 0;
@@ -453,6 +414,43 @@ namespace database
 
             std::cout << "statement:" << e.what() << std::endl;
             throw;
+        }
+    }
+
+
+#include <mutex>
+    void User::send_to_queue()
+    {
+        static cppkafka::Configuration config = {
+            {"metadata.broker.list", Config::get().get_queue_host()},
+            {"acks", "all"}};
+        static cppkafka::Producer producer(config);
+        static std::mutex mtx;
+        static int message_key{0};
+        using Hdr = cppkafka::MessageBuilder::HeaderType;
+
+        std::lock_guard<std::mutex> lock(mtx);
+        std::stringstream ss;
+        Poco::JSON::Stringifier::stringify(toJSON(), ss);
+        std::string message = ss.str();
+        bool not_sent = true;
+
+        cppkafka::MessageBuilder builder(Config::get().get_queue_topic());
+        std::string mk = std::to_string(++message_key);
+        builder.key(mk);                                       // set some key
+        builder.header(Hdr{"producer_type", "author writer"}); // set some custom header
+        builder.payload(message);                              // set message
+
+        while (not_sent)
+        {
+            try
+            {
+                producer.produce(builder);
+                not_sent = false;
+            }
+            catch (...)
+            {
+            }
         }
     }
 

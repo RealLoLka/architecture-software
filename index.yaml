@@ -189,6 +189,12 @@ paths:
         required: true
         schema:
           type: string
+      - name: presence
+        description: Описание продукта
+        in: query
+        required: true
+        schema:
+          type: string
       - name: price
         description: Цена продукта
         in: query
@@ -330,6 +336,7 @@ components:
         - category 
         - method
         - desctiption
+        - presence
         - price
         - user_id
       properties:
@@ -342,6 +349,8 @@ components:
         method:
           type: string
         description:
+          type: string
+        presence:
           type: string
         price:
           type: string
